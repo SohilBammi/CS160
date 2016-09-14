@@ -1,0 +1,10 @@
+{
+    "title":"Calorie Tracker",
+    "id":"calorietracker.project.kinoma.marvell.com",
+    "tags":[
+        "uiSample"
+    ],
+    "Create":{
+        "main":"src/main"
+    },
+}

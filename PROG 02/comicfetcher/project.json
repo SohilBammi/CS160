@@ -1,0 +1,14 @@
+{
+    "title":"Comic Fetcher",
+    "description":"This is a project that fetches comics and images from Flickr.",
+    "id":"comicfetcher.project.kinoma.marvell.com",
+    "tags":[
+        "emptySample"
+    ],
+    "Create":{
+        "main":"main"
+    },
+    "Element":{
+        "main":"main"
+    }
+}

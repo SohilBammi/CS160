@@ -54,7 +54,7 @@ import {
 
 let darkGraySkin = new Skin({ fill: "#202020" });
 let titleStyle = new Style({ font: "20px", color: "white" });
-let buttonStyle = new Style({font: '14px', color: 'white'});
+let buttonStyle = new Style({font: '14px', color: 'black'});
 
 let MainContainer = Container.template($ => ({
     left: 0, right: 0, top: 0, bottom: 0,
@@ -79,11 +79,11 @@ let MainContainer = Container.template($ => ({
 }));
 
 var prevButton = new Container({
-  left: 40, right: 230, top: 10, bottom: 10, skin: new Skin({fill:'#000000'}),
+  left: 40, right: 230, top: 10, bottom: 10, skin: new Skin({fill:'#8c8c8c'}),
   active: true,
   contents: [
     new Label({
-      left: 0, right:0, top: 0, bottom: 0, color: '#ffffff',
+      left: 0, right:0, top: 0, bottom: 0, color: '#000000',
       style: buttonStyle,
       string: 'Prev'
     })
@@ -103,11 +103,11 @@ var prevButton = new Container({
 });
 
 var nextButton = new Container({
-  left: 230, right: 40, top: 10, bottom: 10, skin: new Skin({fill:'#000000'}),
+  left: 230, right: 40, top: 10, bottom: 10, skin: new Skin({fill:'#8c8c8c'}),
   active: true,
   contents: [
     new Label({
-      left: 0, right:0, top: 0, bottom: 0, color: '#ffffff',
+      left: 0, right:0, top: 0, bottom: 0, color: '#000000',
       style: buttonStyle,
       string: 'Next'
     })
@@ -118,6 +118,28 @@ var nextButton = new Container({
           currentComic++;
         }
         setComicUrl();
+      var uiCallback = function(imageURL) {
+        setComicImg(imageURL);
+      };
+      getComicImg(uiCallback);
+    }
+  })
+});
+
+var randomButton = new Container({
+  left: 100, right: 100, top: 10, bottom: 10, skin: new Skin({fill:'#8c8c8c'}),
+  active: true,
+  contents: [
+    new Label({
+      left: 0, right:0, top: 0, bottom: 0, color: '#000000',
+      style: buttonStyle,
+      string: 'Randomize'
+    })
+  ],
+  behavior: Behavior({
+    onTouchEnded(content) {
+      currentComic = Math.floor(Math.random() * (1739))+1;
+      setComicUrl();
       var uiCallback = function(imageURL) {
         setComicImg(imageURL);
       };
@@ -187,27 +209,6 @@ function setFlickrPhoto(){
     });
 }
 
-var randomButton = new Container({
-  left: 100, right: 100, top: 10, bottom: 10, skin: new Skin({fill:'#000000'}),
-  active: true,
-  contents: [
-    new Label({
-      left: 0, right:0, top: 0, bottom: 0, color: '#ffffff',
-      style: buttonStyle,
-      string: 'Randomize'
-    })
-  ],
-  behavior: Behavior({
-    onTouchEnded(content) {
-      currentComic = Math.floor(Math.random() * (1739))+1;
-      setComicUrl();
-      var uiCallback = function(imageURL) {
-        setComicImg(imageURL);
-      };
-      getComicImg(uiCallback);
-    }
-  })
-});
 
 /* Helper function for sending the HTTP request and loading the response */
 function getComicImg(uiCallback) {
@@ -241,7 +242,7 @@ function getComicImg(uiCallback) {
 }
 
 var buttonContainer = new Container({
-  left: 0, right: 0, top: 0, height:40, skin: new Skin({fill:'#ffffff'}),
+  left: 0, right: 0, top: 0, height:40, skin: new Skin({fill:'#ff5b5b'}),
   contents: [
  	prevButton,
  	randomButton,
@@ -294,6 +295,5 @@ setComicUrl();
 var firstComicCallback = function(imageURL) {
         setComicImg(imageURL);
       };
-getComicImg(firstComicCallback);
-setFlickrImg('http://i.imgur.com/AlbVAJA.jpg');
+getComicImg(firstComicCallback);
 

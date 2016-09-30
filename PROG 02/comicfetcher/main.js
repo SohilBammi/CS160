@@ -55,6 +55,7 @@ import {
 let darkGraySkin = new Skin({ fill: "#202020" });
 let titleStyle = new Style({ font: "20px", color: "white" });
 let buttonStyle = new Style({font: '14px', color: 'black'});
+let contStyle = new Style({font: '16px', color: 'black'});
 
 let MainContainer = Container.template($ => ({
     left: 0, right: 0, top: 0, bottom: 0,
@@ -251,16 +252,26 @@ var buttonContainer = new Container({
 });
 
 var comicContainer = new Container({
-  left: 0, right: 0, top: 0, height:200, skin: new Skin({fill:'#000000'}),
+  left: 0, right: 0, top: 0, height:200, skin: new Skin({fill:'#efefef'}),
   contents: [
- 	comicImg
+    new Label({
+      left: 0, right:0, top: 5, color: '#000000',
+      style: contStyle,
+      string: 'Comic Title'
+    }),
+ 	  comicImg
   ]
 });
 
 var flickrContainer = new Container({
-  left: 0, right: 0, top: 0, height:200, skin: new Skin({fill:'#ffffff'}),
+  left: 0, right: 0, top: 0, height:200, skin: new Skin({fill:'#efefef'}),
   contents: [
- 	flickrImg
+    new Label({
+      left: 0, right:0, top: 5, color: '#000000',
+      style: contStyle,
+      string: 'Flickr Title'
+    }),
+ 	  flickrImg
   ]
 });
 
@@ -295,5 +306,6 @@ setComicUrl();
 var firstComicCallback = function(imageURL) {
         setComicImg(imageURL);
       };
-getComicImg(firstComicCallback);
+getComicImg(firstComicCallback);
+
 

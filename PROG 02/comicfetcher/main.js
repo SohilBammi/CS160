@@ -18,8 +18,27 @@
  
 var comicImg = new Picture({left:0, right: 0, top:25, bottom:25, height: 150});
 var flickrImg = new Picture({left:0, right: 0, top:25, bottom:25, height: 150});
+var flickrApiKey = 'de86d9f0464fa0a2b3f9ef7653d0cd51';
 var comicUrl = '';
 var currentComic = 1;
+var comicTitle = ''; 
+var flickrTitle = '';
+var flickrSearchUrl = '';
+var flickrPhotoUrl = '';
+
+function setComicTitle(title) {
+  comicTitle = title;
+}
+
+function setFlickrTitle(title) {
+  flickrTitle = title;
+}
+
+function setSearchUrl(title) {
+  var tagString = title.split(' ').join(',');
+  flickrSearchUrl = 'https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key='+flickrApiKey+'&tags='+tagString+'&tag_mode=any&format=json&nojsoncallback=1';
+  trace(flickrSearchUrl+'\n');
+}
 
 function setComicUrl() {
 	comicUrl = 'http://xkcd.com/'+currentComic+'/info.0.json';
@@ -53,7 +72,7 @@ let MainContainer = Container.template($ => ({
             top: 0, height: 25, left: 0, right: 0, skin: darkGraySkin, 
             style: titleStyle, 
             contents: [
-                new Label({ string: "Image Fetcher" }),
+                new Label({ string: "Comic Fetcher" }),
             ]
         })
     ]
@@ -107,6 +126,67 @@ var nextButton = new Container({
   })
 });
 
+function setFlickrPhotoUrl(){
+    trace('reached photoURL \n');
+    let message = new Message(flickrSearchUrl);
+    let promise = message.invoke(Message.TEXT)
+    promise.then(text => {
+      if (0 == message.error && 200 == message.status) {
+          try {
+            var responseObject = JSON.parse(text);
+            if(responseObject.photos.photo[0].id){
+                var photoId = responseObject.photos.photo[0].id;
+                flickrPhotoUrl = 'https://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key='+flickrApiKey+'&photo_id='+photoId+'&format=json&nojsoncallback=1';
+                trace(flickrPhotoUrl+'\n');
+                setFlickrPhoto();
+            }
+            else {
+                trace('Request Failed - Raw Response Body: *'+text+'*'+'\n');
+            }
+          }
+          catch (e) {
+            throw('Web service responded with invalid JSON!\n');
+          }
+      }
+      else {
+          trace('Request Failed - Raw Response Body: *'+text+'*'+'\n');
+      }
+    });
+}
+
+function setFlickrPhoto(){
+    trace('reached photo \n');
+    let message = new Message(flickrPhotoUrl);
+    trace(flickrPhotoUrl+'\n');
+    let promise = message.invoke(Message.TEXT)
+    promise.then(text => {
+      if (0 == message.error && 200 == message.status) {
+          try {
+            var responseObject = JSON.parse(text);
+            if(responseObject.sizes.size[0].source){
+                var imgs = responseObject.sizes.size;
+                var len = imgs.length-2;
+                if(len < 0){
+                  len = 0;
+                }
+                trace(len+'\n');
+                trace(imgs[len].source+'\n');
+                flickrImg.url = imgs[len].source;
+            }
+            else {
+                trace('Request Failed - Raw Response Body: *'+text+'*'+'\n');
+            }
+          }
+          catch (e) {
+            throw('Web service responded with invalid JSON!\n');
+          }
+      }
+      else {
+          trace('Request Failed - Raw Response Body: *'+text+'*'+'\n');
+      }
+    });
+}
+
 var randomButton = new Container({
   left: 100, right: 100, top: 10, bottom: 10, skin: new Skin({fill:'#000000'}),
   active: true,
@@ -140,6 +220,11 @@ function getComicImg(uiCallback) {
             var responseObject = JSON.parse(text);
             if (responseObject.img) {
               uiCallback(responseObject.img);
+            }
+            if(responseObject.title){
+              setComicTitle(responseObject.title);
+              setSearchUrl(responseObject.title);
+              setFlickrPhotoUrl();
             }
             else {
                 trace('Request Failed - Raw Response Body: *'+text+'*'+'\n');

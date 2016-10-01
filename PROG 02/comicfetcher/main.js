@@ -57,6 +57,19 @@ let titleStyle = new Style({ font: "20px", color: "white" });
 let buttonStyle = new Style({font: '14px', color: 'black'});
 let contStyle = new Style({font: '16px', color: 'black'});
 
+var comicTitleLabel = new Label({
+      left: 0, right:0, top: 5, color: '#000000',
+      style: contStyle,
+      string: 'XKCD Comic'
+    });
+
+var flickrTitleLabel = new Label({
+      left: 0, right:0, top: 5, color: '#000000',
+      style: contStyle,
+      string: 'Flickr Image'
+    });
+
+
 let MainContainer = Container.template($ => ({
     left: 0, right: 0, top: 0, bottom: 0,
     contents: [
@@ -159,6 +172,7 @@ function setFlickrPhotoUrl(){
             var responseObject = JSON.parse(text);
             if(responseObject.photos.photo[0].id){
                 var photoId = responseObject.photos.photo[0].id;
+                flickrTitleLabel.string = responseObject.photos.photo[0].title;
                 flickrPhotoUrl = 'https://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key='+flickrApiKey+'&photo_id='+photoId+'&format=json&nojsoncallback=1';
                 trace(flickrPhotoUrl+'\n');
                 setFlickrPhoto();
@@ -225,6 +239,7 @@ function getComicImg(uiCallback) {
             }
             if(responseObject.title){
               setComicTitle(responseObject.title);
+              comicTitleLabel.string = responseObject.title;
               setSearchUrl(responseObject.title);
               setFlickrPhotoUrl();
             }
@@ -254,11 +269,7 @@ var buttonContainer = new Container({
 var comicContainer = new Container({
   left: 0, right: 0, top: 0, height:200, skin: new Skin({fill:'#efefef'}),
   contents: [
-    new Label({
-      left: 0, right:0, top: 5, color: '#000000',
-      style: contStyle,
-      string: 'Comic Title'
-    }),
+    comicTitleLabel,
  	  comicImg
   ]
 });
@@ -266,11 +277,7 @@ var comicContainer = new Container({
 var flickrContainer = new Container({
   left: 0, right: 0, top: 0, height:200, skin: new Skin({fill:'#efefef'}),
   contents: [
-    new Label({
-      left: 0, right:0, top: 5, color: '#000000',
-      style: contStyle,
-      string: 'Flickr Title'
-    }),
+    flickrTitleLabel,
  	  flickrImg
   ]
 });
@@ -307,5 +314,3 @@ var firstComicCallback = function(imageURL) {
         setComicImg(imageURL);
       };
 getComicImg(firstComicCallback);
-
-
